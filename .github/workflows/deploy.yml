@@ -1,4 +1,5 @@
-name: Deploy Website
+```yaml
+name: Deploy Application
 
 on:
   push:
@@ -7,20 +8,51 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
-      - name: Checkout code
+      - name: Checkout GitHub repository
         uses: actions/checkout@v4
 
-      - name: Deploy files
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          port: 22
-          script: |
-            sudo rsync -av --delete ./ /var/www/html/
-            sudo chown -R www-data:www-data /var/www/html
-            sudo systemctl restart apache2
+      - name: Test SSH connection to Code VM
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+          ssh-keyscan -H 192.168.1.104 >> ~/.ssh/known_hosts
+
+          ssh -i ~/.ssh/deploy_key \
+            vboxuser@192.168.1.104 \
+            "hostname && echo SSH connection successful"
+
+      - name: Deploy code to Code VM
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+          ssh-keyscan -H 192.168.1.104 >> ~/.ssh/known_hosts
+
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            ./ \
+            vboxuser@192.168.1.104:/opt/my-app/
+
+      - name: Verify deployment
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+            vboxuser@192.168.1.104 \
+            "ls -la /opt/my-app"
+```
+
