@@ -44,7 +44,7 @@ jobs:
           rsync -avz --delete \
             -e "ssh -i ~/.ssh/deploy_key" \
             ./ \
-            vboxuser@192.168.1.104:/opt/my-app/
+            vboxuser@192.168.1.104:/var/www/html/
 
       - name: Verify deployment
         env:
@@ -52,5 +52,5 @@ jobs:
         run: |
           ssh -i ~/.ssh/deploy_key \
             vboxuser@192.168.1.104 \
-            "ls -la /opt/my-app"
+            "ls -la /var/www/html/"
 
