@@ -1,4 +1,3 @@
-```yaml
 name: Deploy Application
 
 on:
@@ -54,5 +53,4 @@ jobs:
           ssh -i ~/.ssh/deploy_key \
             vboxuser@192.168.1.104 \
             "ls -la /opt/my-app"
-```
 
