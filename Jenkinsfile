@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        APP_DIR = '/home/ubuntu/engproject'
+        APP_DIR = '/home/vboxuser/nodejs-website'
         BRANCH = 'main'
-        SERVER = 'ubuntu@192.168.1.24'
+        SERVER = 'vboxuser@192.168.1.107'
     }
 
     stages {
