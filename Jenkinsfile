@@ -7,7 +7,7 @@ pipeline {
         SONARQUBE = 'SonarQube'
 
         // SonarQube project key
-        SONAR_PROJECT_KEY = 'engproject'
+        SONAR_PROJECT_KEY = 'nodejs-website'
     }
 
     stages {
