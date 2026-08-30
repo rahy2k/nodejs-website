@@ -3,7 +3,7 @@ pipeline {
 
     tools {
         // References the scanner tool from Step 5
-        type 'hudson.plugins.sonar.SonarRunnerInstallation', name: 'SonarScanner'
+        type 'hudson.plugins.sonar.SonarRunnerInstallation', name: 'Sonar-Scanner'
     }
 
     stages {
