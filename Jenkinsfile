@@ -3,7 +3,7 @@ pipeline {
 
     tools {
         // References the scanner tool from Step 5
-        sonarScanner 'Sonar-Scanner'
+        sonarScanner 'SonarScanner'
     }
 
     stages {
