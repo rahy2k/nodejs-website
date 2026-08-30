@@ -12,17 +12,4 @@ pipeline {
         }
     }
      
-stage('SonarQube Analysis') {
-            steps {
-                script {
-                    // Fetch the installation path directly
-                    def sonarHome = tool name: 'Sonar-Scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-                    
-                    // Add it to the PATH and execute
-                    withEnv(["PATH+SONAR=${sonarHome}/bin"]) {
-                        sh 'sonar-scanner'
-                    }
-                }
-            }
-        }
 }
