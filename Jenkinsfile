@@ -1,15 +1,15 @@
 pipeline {
     agent any
-    tools {
-        // Fix: Use 'type:' explicitly instead of a raw string
-        type: 'hudson.plugins.sonar.SonarRunnerInstallation', name: 'Sonar-Scanner'
+    environment {
+        // This automatically finds the tool named 'Sonar-Scanner'
+        SONAR_RUNNER_HOME = tool 'Sonar-Scanner'
     }
     stages {
-        stage('Sonar') {
+        stage('SonarQube Analysis') {
             steps {
-                echo 'Running analysis...'
+                // Use the environment variable in your build step
+                sh "${SONAR_RUNNER_HOME}/bin/sonar-scanner"
             }
         }
     }
-     
 }
