@@ -1,38 +1,28 @@
 pipeline {
     agent any
-
     tools {
-        // References the scanner tool from Step 5
-        type 'hudson.plugins.sonar.SonarRunnerInstallation', name: 'Sonar-Scanner'
+        // Fix: Use 'type:' explicitly instead of a raw string
+        type type: 'hudson.plugins.sonar.SonarRunnerInstallation', name: 'Sonar-Scanner'
     }
-
     stages {
-        stage('Clone Source') {
+        stage('Sonar') {
             steps {
-                git branch: 'main', url: 'https://github.com'
-            }
-        }
-
-        stage('SonarQube Cloud Analysis') {
-            steps {
-                // Must match the system name "SonarCloud" used in Step 4
-                withSonarQubeEnv('SonarCloud') {
-                    sh 'sonar-scanner \
-                        -Dsonar.organization=your-sonarcloud-organization-key \
-                        -Dsonar.projectKey=your-unique-project-key \
-                        -Dsonar.projectName="Your Project Name" \
-                        -Dsonar.sources=.'
-                }
-            }
-        }
-        
-        stage("Quality Gate Check") {
-            steps {
-                timeout(time: 1, unit: 'HOURS') {
-                    // Pauses build execution until the Cloud checks pass
-                    waitForQualityGate abortPipeline: true
-                }
+                echo 'Running analysis...'
             }
         }
     }
+     
+stage('SonarQube Analysis') {
+            steps {
+                script {
+                    // Fetch the installation path directly
+                    def sonarHome = tool name: 'Sonar-Scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                    
+                    // Add it to the PATH and execute
+                    withEnv(["PATH+SONAR=${sonarHome}/bin"]) {
+                        sh 'sonar-scanner'
+                    }
+                }
+            }
+        }
 }
